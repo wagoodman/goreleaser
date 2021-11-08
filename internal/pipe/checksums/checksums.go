@@ -41,6 +41,7 @@ func (Pipe) Run(ctx *context.Context) (err error) {
 		artifact.ByType(artifact.UploadableBinary),
 		artifact.ByType(artifact.UploadableSourceArchive),
 		artifact.ByType(artifact.LinuxPackage),
+		artifact.ByType(artifact.SBOM),
 	)
 	if len(ctx.Config.Checksum.IDs) > 0 {
 		filter = artifact.And(filter, artifact.ByIDs(ctx.Config.Checksum.IDs...))

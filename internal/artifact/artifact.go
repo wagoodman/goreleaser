@@ -60,6 +60,8 @@ const (
 	KrewPluginManifest
 	// ScoopManifest is an uploadable scoop manifest file.
 	ScoopManifest
+	// SBOM is a Software Bill of Materials file.
+	SBOM
 )
 
 func (t Type) String() string {
@@ -94,6 +96,8 @@ func (t Type) String() string {
 		return "Krew Plugin Manifest"
 	case ScoopManifest:
 		return "Scoop Manifest"
+	case SBOM:
+		return "SBOM"
 	default:
 		return "unknown"
 	}

@@ -76,11 +76,14 @@ func (Pipe) Run(ctx *context.Context) error {
 					artifact.ByType(artifact.UploadableSourceArchive),
 					artifact.ByType(artifact.Checksum),
 					artifact.ByType(artifact.LinuxPackage),
+					artifact.ByType(artifact.SBOM),
 				))
 			case "archive":
 				filters = append(filters, artifact.ByType(artifact.UploadableArchive))
 			case "binary":
 				filters = append(filters, artifact.ByType(artifact.UploadableBinary))
+			case "sbom":
+				filters = append(filters, artifact.ByType(artifact.SBOM))
 			case "package":
 				filters = append(filters, artifact.ByType(artifact.LinuxPackage))
 			case "none": // TODO(caarlos0): this is not very useful, lets remove it.

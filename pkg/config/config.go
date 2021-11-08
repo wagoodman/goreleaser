@@ -616,6 +616,17 @@ type NFPMOverridables struct {
 	APK              NFPMAPK           `yaml:"apk,omitempty"`
 }
 
+// SBOM config.
+type SBOM struct {
+	ID        string   `yaml:"id,omitempty"`
+	Cmd       string   `yaml:"cmd,omitempty"`
+	Env       []string `yaml:"env,omitempty"`
+	Args      []string `yaml:"args,omitempty"`
+	SBOMs     []string `yaml:"sboms,omitempty"`
+	Artifacts string   `yaml:"artifacts,omitempty"`
+	IDs       []string `yaml:"ids,omitempty"`
+}
+
 // Sign config.
 type Sign struct {
 	ID          string   `yaml:"id,omitempty"`
@@ -832,6 +843,7 @@ type Project struct {
 	Source          Source           `yaml:"source,omitempty"`
 	GoMod           GoMod            `yaml:"gomod,omitempty"`
 	Announce        Announce         `yaml:"announce,omitempty"`
+	SBOMs           []SBOM           `yaml:"sboms,omitempty"`
 
 	UniversalBinaries []UniversalBinary `yaml:"universal_binaries,omitempty"`
 
