@@ -42,19 +42,19 @@ func (Pipe) Default(ctx *context.Context) error {
 		if cfg.Artifacts == "" {
 			cfg.Artifacts = "binary"
 		}
-		if len(cfg.SBOMs) == 0 {
+		if len(cfg.Documents) == 0 {
 			switch cfg.Artifacts {
 			case "binary":
-				cfg.SBOMs = []string{"{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}.sbom"}
+				cfg.Documents = []string{"{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}.sbom"}
 			case "any":
-				cfg.SBOMs = []string{}
+				cfg.Documents = []string{}
 			default:
-				cfg.SBOMs = []string{"{{ .ArtifactName }}.sbom"}
+				cfg.Documents = []string{"{{ .ArtifactName }}.sbom"}
 			}
 		}
 		if cfg.Cmd == "syft" {
 			if len(cfg.Args) == 0 {
-				cfg.Args = []string{"--file", "$sbom0", "--output", "spdx-json", "$artifact"}
+				cfg.Args = []string{"$artifact", "--file", "$document", "--output", "spdx-json", "-vv"}
 			}
 			if len(cfg.Env) == 0 && cfg.Artifacts == "source" {
 				cfg.Env = []string{
@@ -66,7 +66,7 @@ func (Pipe) Default(ctx *context.Context) error {
 			cfg.ID = "default"
 		}
 
-		if cfg.Artifacts != "any" && len(cfg.SBOMs) > 1 {
+		if cfg.Artifacts != "any" && len(cfg.Documents) > 1 {
 			return fmt.Errorf("multiple SBOM outputs when artifacts=%q is unsupported", cfg.Artifacts)
 		}
 
@@ -151,16 +151,16 @@ func catalogArtifact(ctx *context.Context, cfg config.SBOM, a *artifact.Artifact
 	}
 
 	var paths []string
-	for idx, sbom := range cfg.SBOMs {
+	for idx, sbom := range cfg.Documents {
 		input := filepath.Join(ctx.Config.Dist, expand(sbom, env))
 		path, err := templater.Apply(input)
 		if err != nil {
 			return nil, fmt.Errorf("cataloging artifacts failed: %s: invalid template: %w", input, err)
 		}
 
-		env[fmt.Sprintf("sbom%d", idx)] = path
+		env[fmt.Sprintf("document%d", idx)] = path
 		if idx == 0 {
-			env["sbom"] = path
+			env["document"] = path
 		}
 		paths = append(paths, path)
 	}
@@ -205,13 +205,13 @@ func catalogArtifact(ctx *context.Context, cfg config.SBOM, a *artifact.Artifact
 		return nil, fmt.Errorf("cataloging artifacts: %s failed: %w: %s", cfg.Cmd, err, b.String())
 	}
 
-	if len(cfg.SBOMs) == 0 {
+	if len(cfg.Documents) == 0 {
 		return nil, nil
 	}
 
 	var artifacts []*artifact.Artifact
 
-	for _, sbom := range cfg.SBOMs {
+	for _, sbom := range cfg.Documents {
 		templater = tmpl.New(ctx).WithEnv(env)
 		if a != nil {
 			env["artifact"] = a.Name

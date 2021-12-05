@@ -19,7 +19,7 @@ func TestDescription(t *testing.T) {
 }
 
 func TestSBOMCatalogDefault(t *testing.T) {
-	defaultArgs := []string{"--file", "$sbom0", "--output", "spdx-json", "$artifact"}
+	defaultArgs := []string{"$artifact", "--file", "$document", "--output", "spdx-json"}
 	defaultSboms := []string{
 		"{{ .ArtifactName }}.sbom",
 	}
@@ -113,7 +113,7 @@ func TestSBOMCatalogDefault(t *testing.T) {
 			err := Pipe{}.Default(ctx)
 			require.NoError(t, err)
 			require.Equal(t, ctx.Config.SBOMs[0].Cmd, test.cmd)
-			require.Equal(t, ctx.Config.SBOMs[0].SBOMs, test.sboms)
+			require.Equal(t, ctx.Config.SBOMs[0].Documents, test.sboms)
 			require.Equal(t, ctx.Config.SBOMs[0].Args, test.args)
 			require.Equal(t, ctx.Config.SBOMs[0].Env, test.env)
 			require.Equal(t, ctx.Config.SBOMs[0].Artifacts, test.artifact)
@@ -280,12 +280,12 @@ func TestSBOMCatalogArtifacts(t *testing.T) {
 							Artifacts: "any",
 							Args: []string{
 								"--file",
-								"$sbom0",
+								"$document0",
 								"--output",
 								"spdx-json",
 								"{{.Dist}}/artifact5.tar.gz",
 							},
-							SBOMs: []string{
+							Documents: []string{
 								"final.sbom",
 							},
 						},
@@ -310,7 +310,7 @@ func TestSBOMCatalogArtifacts(t *testing.T) {
 						{
 							ID:        "s2",
 							Artifacts: "archive",
-							SBOMs:     []string{"{{ .ArtifactName }}.{{ .Env.SBOM_SUFFIX }}.sbom"},
+							Documents: []string{"{{ .ArtifactName }}.{{ .Env.SBOM_SUFFIX }}.sbom"},
 						},
 					},
 				},
@@ -356,12 +356,12 @@ func TestSBOMCatalogArtifacts(t *testing.T) {
 							Artifacts: "binary",
 							Args: []string{
 								"--file",
-								"$sbom",
+								"$document",
 								"--output",
 								"spdx-json",
 								"$artifact",
 							},
-							SBOMs: []string{
+							Documents: []string{
 								"{{ .ArtifactName }}.{{ .Env.TEST_USER }}.sbom",
 							},
 						},

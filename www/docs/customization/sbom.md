@@ -29,22 +29,22 @@ sboms:
     # Defaults to "default".
     id: foo
 
-    # List of Names/templates of the SBOM files created at this step (relative to the dist dir).
+    # List of Names/templates of the SBOM documents created at this step (relative to the dist dir).
     #
     # Each element configured is made available as variables. For example:
-    #   sbom: ["foo", "bar"]
+    #   documents: ["foo", "bar"]
     #
     # would make the following variables that can be referenced as template keys:
-    #   sbom0: "foo"
-    #   sbom1: "bar"
+    #   document0: "foo"
+    #   document1: "bar"
     #
     # Default value is conditional based on the value of "artifacts"
-    #   - "binary":         ["{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}.sbom"]
-    #   - "any":            []
-    #   - any other value:  ["{{ .ArtifactName }}.sbom"]
+    #   - "binary":   ["{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}.sbom"]
+    #   - "any":      []
+    #   - otherwise:  ["{{ .ArtifactName }}.sbom"]
     #
-    # Note that multiple sbom values are only allowed if the value of "artifacts" is "none".
-    sboms:
+    # Note that multiple sbom values are only allowed if the value of "artifacts" is "any".
+    documents:
       - "${artifact}.spdx.sbom"
 
     # Path to the SBOM generator command
@@ -54,8 +54,8 @@ sboms:
 
     # Command line templateable arguments for the command
     #
-    # Defaults to `["--file", "$sbom0", "--output", "spdx-json", "$artifact"]`
-    args: ["--file", "$sbom0", "--output", "spdx-json", "$artifact"]
+    # Defaults to `["$artifact", "--file", "$document", "--output", "spdx-json"]`
+    args: ["$artifact", "--file", "$sbom", "--output", "spdx-json"]
 
     # List of environment variables that will be passed to the SBOM command as well as the templates.
     #
@@ -77,7 +77,7 @@ sboms:
 
     # IDs of the artifacts to catalog.
     #
-    # If `artifacts` is "source" then this fields has no effect.
+    # If `artifacts` is "source" or "any" then this fields has no effect.
     #
     # Defaults to empty (which implies no filtering).
     ids:
@@ -91,8 +91,8 @@ These environment variables might be available in the fields that are templateab
 
 - `${artifact}`: the path to the artifact that will be cataloged (unless "artifacts" config item is "any")
 - `${artifactID}`: the ID of the artifact that will be cataloged (unless "artifacts" config item is "any")
-- `${sbom}`:  the SBOM filename generated (corresponds to `${sbom0}` if the "artifacts" config item is "any")
-- `${sbom#}`: the SBOM filenames generated, where `#` corresponds to the list index under the "sboms" config item (e.g. `${sbom0}`)
+- `${document}`:  the SBOM filename generated (corresponds to `${document0}` if the "artifacts" config item is "any")
+- `${document#}`: the SBOM filenames generated, where `#` corresponds to the list index under the "sboms" config item (e.g. `${document0}`)
 
 ## Limitations
 

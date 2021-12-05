@@ -622,7 +622,7 @@ type SBOM struct {
 	Cmd       string   `yaml:"cmd,omitempty"`
 	Env       []string `yaml:"env,omitempty"`
 	Args      []string `yaml:"args,omitempty"`
-	SBOMs     []string `yaml:"sboms,omitempty"`
+	Documents []string `yaml:"documents,omitempty"`
 	Artifacts string   `yaml:"artifacts,omitempty"`
 	IDs       []string `yaml:"ids,omitempty"`
 }
